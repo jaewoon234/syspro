@@ -14,5 +14,5 @@ int main(int argc, char *argv[])
 		c = getc(fp);
 	}
 	fclose(fp);
-	returon 0;
+	return 0;
 }
