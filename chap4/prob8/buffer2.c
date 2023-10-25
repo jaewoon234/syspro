@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// buffering_modes.h
-#define UNBUFFERED 0
-#define LINE_BUFFERED 1
-#define FULLY_BUFFERED 2
-#include "buffering_modes.h"
-
-
 #define _IO_UNBUFFERED 0x0002
 #define _IO_LINE_BUF 0x0200
 
@@ -36,14 +29,19 @@ int main(int argc, char *argv[]) {
 
     printf("Stream = %s, ", argv[1]);
 
-    if (fp->_flags & _IO_UNBUFFERED)
+    // Check buffering status
+    int mode;
+    if (setvbuf(fp, NULL, _IONBF, 0) == 0) {
         printf("Unbuffered");
-    else if (fp->_flags & _IO_LINE_BUF)
+    } else if (setvbuf(fp, NULL, _IOLBF, BUFSIZ) == 0) {
         printf("Line buffered");
-    else
+    } else if (setvbuf(fp, NULL, _IOFBF, BUFSIZ) == 0) {
         printf("Fully buffered");
+    } else {
+        printf("Unknown");
+    }
 
-    printf(", Buffer size = %ld\n", fp->_IO_buf_end - fp->_IO_buf_base);
+    printf(", Buffer size = %d\n", BUFSIZ);
     exit(0);
 }
 
